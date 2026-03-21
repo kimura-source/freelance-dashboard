@@ -1,6 +1,6 @@
 {
-  "updated": "2026-03-21T07:47:43+09:00",
-  "updatedDate": "2026年03月21日 07:47",
+  "updated": "2026-03-21T11:36:09+09:00",
+  "updatedDate": "2026年03月21日 11:36",
   "fs": [
     {
       "id": 42,
@@ -9,7 +9,7 @@
       "open": 0,
       "cl": 0,
       "fhid": 1,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 7,
@@ -18,25 +18,25 @@
       "open": 0,
       "cl": 0,
       "fhid": 23,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 71,
-      "n": "ITプロパートナーズ",
+      "n": "ITプロパートナーズ(ITPRO PARTNERS)",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": null,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 1,
-      "n": "Midworks",
+      "n": "Midworks（ミッドワークス）",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": 20,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 2,
@@ -45,7 +45,7 @@
       "open": 0,
       "cl": 0,
       "fhid": 9,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 3,
@@ -54,25 +54,25 @@
       "open": 0,
       "cl": 0,
       "fhid": 28,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 4,
-      "n": "ギークスジョブ",
+      "n": "ギークスジョブ(GEECHS JOB)",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": null,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 5,
-      "n": "テクフリ",
+      "n": "テクフリ(テックキャリアフリーランス)",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": null,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 21,
@@ -81,16 +81,15 @@
       "open": 0,
       "cl": 0,
       "fhid": 7,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 25,
-      "n": "Humalance",
+      "n": "Humalance(ヒューマランス)",
       "tot": 0,
       "open": 0,
       "cl": 0,
-      "fhid": 15,
-      "lastPage": 0
+      "fhid": 15
     },
     {
       "id": 37,
@@ -99,7 +98,7 @@
       "open": 0,
       "cl": 0,
       "fhid": 53,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 43,
@@ -108,7 +107,7 @@
       "open": 0,
       "cl": 0,
       "fhid": 2,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 56,
@@ -117,16 +116,16 @@
       "open": 0,
       "cl": 0,
       "fhid": 19,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 75,
-      "n": "TechTreat",
+      "n": "TechTreat(テックトリート)",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": null,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 98,
@@ -135,7 +134,7 @@
       "open": 0,
       "cl": 0,
       "fhid": 34,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 103,
@@ -144,7 +143,7 @@
       "open": 0,
       "cl": 0,
       "fhid": 45,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 106,
@@ -152,17 +151,16 @@
       "tot": 0,
       "open": 0,
       "cl": 0,
-      "fhid": 61,
-      "lastPage": 0
+      "fhid": 61
     },
     {
       "id": 130,
-      "n": "Findy Freelance",
+      "n": "Findy Freelance（ファインディフリーランス）",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": 60,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 158,
@@ -171,43 +169,285 @@
       "open": 0,
       "cl": 0,
       "fhid": null,
-      "lastPage": 0
+      "exact": true
     },
     {
       "id": 161,
-      "n": "FLEXY",
+      "n": "FLEXY(フレキシー)",
       "tot": 0,
       "open": 0,
       "cl": 0,
       "fhid": 30,
-      "lastPage": 0
+      "exact": true
     },
     {
-      "id": 174,
-      "n": "テクワーク",
+      "id": 47,
+      "n": "1 on 1 Freelance",
       "tot": 0,
       "open": 0,
       "cl": 0,
-      "fhid": null,
-      "lastPage": 0
-    },
+      "fhid": 36
+    }
+  ],
+  "fh": [
     {
-      "id": 170,
-      "n": "Stylee",
+      "id": 1,
+      "n": "レバテックフリーランス",
       "tot": 0,
       "open": 0,
-      "cl": 0,
-      "fhid": null,
-      "lastPage": 0
+      "cl": 0
     },
     {
-      "id": 82,
-      "n": "アサインナビ",
+      "id": 2,
+      "n": "レバテッククリエイター",
       "tot": 0,
       "open": 0,
-      "cl": 0,
-      "fhid": null,
-      "lastPage": 0
+      "cl": 0
+    },
+    {
+      "id": 3,
+      "n": "Next Career Freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 4,
+      "n": "SEES(シーズ)",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 5,
+      "n": "CloudBuilders",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 6,
+      "n": "GrowthTech",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 7,
+      "n": "アットエンジニア",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 8,
+      "n": "Webist",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 9,
+      "n": "ココナラテック",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 10,
+      "n": "フリーコンサルBiz",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 12,
+      "n": "Freed Job",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 13,
+      "n": "ランサーズエージェント",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 14,
+      "n": "テックビズフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 15,
+      "n": "Humalance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 16,
+      "n": "HiPro Tech",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 17,
+      "n": "フリーランスのミカタ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 18,
+      "n": "Relance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 19,
+      "n": "キャリアプラス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 20,
+      "n": "Midworks",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 22,
+      "n": "フリコン",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 23,
+      "n": "ビズリンク",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 24,
+      "n": "チョクフリ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 28,
+      "n": "フォスターフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 30,
+      "n": "FLEXY",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 34,
+      "n": "mijicaフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 35,
+      "n": "オルタナエクス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 36,
+      "n": "1 on 1 Freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 38,
+      "n": "コンプロフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 39,
+      "n": "テックリーチ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 41,
+      "n": "Freelance match",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 44,
+      "n": "フリーランスポート",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 45,
+      "n": "meetX FREELANCE",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 46,
+      "n": "World in Freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 47,
+      "n": "プロエンジニア",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 53,
+      "n": "Pe-BANK フリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 60,
+      "n": "Findy Freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
+    },
+    {
+      "id": 61,
+      "n": "ROSCA freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0
     }
   ]
 }

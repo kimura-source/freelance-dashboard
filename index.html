@@ -1,1 +1,479 @@
-<!DOCTYPE html><html lang=ja><head><meta charset=UTF-8><title>フリーランスエージェント比較</title><style>body{font-family:sans-serif;background:#f4f6f9;padding:20px}table{width:100%;border-collapse:collapse;background:#fff}th{background:#1d4ed8;color:#fff;padding:10px 12px;font-size:12px}td{padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}.ok{color:#15803d;font-weight:600}.warn{color:#b91c1c;font-weight:600}</style></head><body><h1>フリーランスエージェント比較</h1><p>更新：2026年03月21日 07:47</p><table><thead><tr><th>#</th><th>名前</th><th>募集中</th></tr></thead><tbody id=tb></tbody></table><script>const D=[{"id": 42, "n": "レバテックフリーランス", "tot": 0, "open": 0, "cl": 0, "fhid": 1, "lastPage": 0}, {"id": 7, "n": "ビズリンク(Bizlink)", "tot": 0, "open": 0, "cl": 0, "fhid": 23, "lastPage": 0}, {"id": 71, "n": "ITプロパートナーズ", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 1, "n": "Midworks", "tot": 0, "open": 0, "cl": 0, "fhid": 20, "lastPage": 0}, {"id": 2, "n": "ココナラテック", "tot": 0, "open": 0, "cl": 0, "fhid": 9, "lastPage": 0}, {"id": 3, "n": "フォスターフリーランス", "tot": 0, "open": 0, "cl": 0, "fhid": 28, "lastPage": 0}, {"id": 4, "n": "ギークスジョブ", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 5, "n": "テクフリ", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 21, "n": "アットエンジニア", "tot": 0, "open": 0, "cl": 0, "fhid": 7, "lastPage": 0}, {"id": 25, "n": "Humalance", "tot": 0, "open": 0, "cl": 0, "fhid": 15, "lastPage": 0}, {"id": 37, "n": "PE-BANK", "tot": 0, "open": 0, "cl": 0, "fhid": 53, "lastPage": 0}, {"id": 43, "n": "レバテッククリエイター", "tot": 0, "open": 0, "cl": 0, "fhid": 2, "lastPage": 0}, {"id": 56, "n": "キャリアプラス", "tot": 0, "open": 0, "cl": 0, "fhid": 19, "lastPage": 0}, {"id": 75, "n": "TechTreat", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 98, "n": "mijicaフリーランス", "tot": 0, "open": 0, "cl": 0, "fhid": 34, "lastPage": 0}, {"id": 103, "n": "meetX FREELANCE", "tot": 0, "open": 0, "cl": 0, "fhid": 45, "lastPage": 0}, {"id": 106, "n": "ROSCA freelance", "tot": 0, "open": 0, "cl": 0, "fhid": 61, "lastPage": 0}, {"id": 130, "n": "Findy Freelance", "tot": 0, "open": 0, "cl": 0, "fhid": 60, "lastPage": 0}, {"id": 158, "n": "TECHBIZ", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 161, "n": "FLEXY", "tot": 0, "open": 0, "cl": 0, "fhid": 30, "lastPage": 0}, {"id": 174, "n": "テクワーク", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 170, "n": "Stylee", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}, {"id": 82, "n": "アサインナビ", "tot": 0, "open": 0, "cl": 0, "fhid": null, "lastPage": 0}];D.sort((a,b)=>b.open-a.open);D.forEach((r,i)=>{const t=document.createElement('tr');t.innerHTML=`<td>${i+1}</td><td>${r.n}</td><td class="${r.open>0?'ok':'warn'}">${r.open.toLocaleString()}</td>`;document.getElementById('tb').appendChild(t);});</script></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>フリーランスエージェント 掲載比較ダッシュボード v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--sb:#1a1f2e;--sbw:224px;--acc:#4ade80;--acc2:#60a5fa;--bd:#e2e8f0;--bg:#f4f6f9;--card:#fff;--txt:#1a1f2e;--txt2:#64748b;--txt3:#94a3b8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sbw);background:var(--sb);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sb-logo{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo .name{font-size:17px;font-weight:700;color:#fff}
+.sb-logo .sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-section{padding:16px 18px 4px;font-size:10px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase}
+.nav{display:flex;align-items:center;gap:10px;padding:8px 18px;font-size:12.5px;color:rgba(255,255,255,.55);cursor:pointer;border-left:3px solid transparent;transition:.15s}
+.nav:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.85)}
+.nav.active{background:rgba(74,222,128,.13);color:var(--acc);border-left-color:var(--acc);font-weight:500}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.28);line-height:1.6}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;border-bottom:1px solid var(--bd);height:50px;padding:0 26px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-t{font-size:14.5px;font-weight:600}
+.tbadge{padding:4px 11px;border-radius:6px;font-size:12px;font-weight:500;background:#f1f5f9;color:var(--txt2);border:1px solid var(--bd)}
+.tbadge.hl{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.tbadge.warn{background:#fffbeb;color:#78350f;border-color:#fde68a;font-size:11px}
+.content{flex:1;overflow-y:auto;padding:22px 26px}
+.ph h1{font-size:20px;font-weight:700}
+.ph p{font-size:12.5px;color:var(--txt2);margin-top:3px}
+.notice{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:11.5px;color:#78350f;line-height:1.6;margin:12px 0 18px;display:flex;gap:8px}
+.kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
+.kpi.hl{border-color:#bfdbfe;background:#eff6ff}
+.kpi .lbl{font-size:10.5px;color:var(--txt2);font-weight:500;margin-bottom:5px}
+.kpi .val{font-size:24px;font-weight:700;line-height:1}
+.kpi.hl .val{color:#1d4ed8}
+.kpi .sub{font-size:11px;color:var(--txt2);margin-top:5px}
+.kpi .sub b{color:#15803d}
+.section{background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.sec-hd{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sec-title{font-size:13.5px;font-weight:600}
+.sec-sub{font-size:11px;color:var(--txt2);margin-top:2px}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{padding:5px 11px;border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--txt2);transition:.15s}
+.tab.a0{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+.tab.a1{background:#2563eb;border-color:#2563eb;color:#fff}
+.tab.a2{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.tab.a3{background:#6b7280;border-color:#6b7280;color:#fff}
+.search{padding:6px 10px;border:1px solid var(--bd);border-radius:6px;font-size:12px;width:175px;outline:none;background:#f8fafc;color:var(--txt)}
+.search:focus{border-color:#93c5fd;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+thead tr{background:#f8fafc}
+th{padding:8px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--txt2);border-bottom:1px solid var(--bd);white-space:nowrap;cursor:pointer;user-select:none;letter-spacing:.03em}
+th:hover{color:var(--txt)}
+td{padding:7px 12px;border-bottom:1px solid #f1f5f9;color:var(--txt);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+td.num{text-align:right;font-family:'Inter',monospace;font-size:12px}
+td.ctr{text-align:center}
+.rk{font-size:13px;font-weight:700;color:var(--txt3)}
+.rk.top{color:var(--txt)}
+.bdg{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.yes{background:#dcfce7;color:#15803d}
+.no{background:#fee2e2;color:#b91c1c}
+.fh{background:#dbeafe;color:#1e40af}
+.gray{background:#f1f5f9;color:#64748b}
+.warn-txt{color:#b91c1c;font-weight:600}
+.ok-txt{color:#15803d;font-weight:600}
+.bar-w{display:flex;align-items:center;gap:6px}
+.bar-t{flex:1;height:5px;background:#e2e8f0;border-radius:3px;min-width:50px;max-width:110px}
+.bar-f{height:100%;border-radius:3px}
+.tf{padding:9px 16px;border-top:1px solid var(--bd);font-size:11px;color:var(--txt3);display:flex;justify-content:space-between}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-logo"><div class="name">掲載比較</div><div class="sub">エージェント調査 2026年03</div></div>
+  <div class="sb-section">分析ビュー</div>
+  <div class="nav active" onclick="setView('both')"><span>⇄</span> 両サイト共通</div>
+  <div class="nav" onclick="setView('fs')"><span>◈</span> FSのみ（案件あり）</div>
+  <div class="nav" onclick="setView('fh')"><span>◉</span> FHのみ掲載</div>
+  <div class="nav" onclick="setView('none')"><span>○</span> FS案件なし</div>
+  <div class="sb-section">外部リンク</div>
+  <div class="nav" onclick="window.open('https://freelance-start.com/agents','_blank')"><span>↗</span> フリーランススタート</div>
+  <div class="nav" onclick="window.open('https://freelance-hub.jp/agent/','_blank')"><span>↗</span> フリーランスHub</div>
+  <div class="sb-footer">フリーランスエージェント調査<br>2サイト 491社調査<br>2026年3月</div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-t">フリーランスエージェント 掲載・募集状況 比較ダッシュボード</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="tbadge warn">⚠ FS募集中件数は推定値含む（レバテック等は正確値）</div>
+      <div class="tbadge">📅 2026年03月</div>
+      <div class="tbadge hl">FS + FH</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="ph"><h1 id="ptitle">両サイト共通掲載</h1><p id="psub">両サイト共通掲載エージェントの募集状況比較</p></div>
+    <div class="notice">
+      <span>⚠</span>
+      <span><b>注意：</b>FS「募集中件数」は<b>全22社をバイナリサーチで実測済み</b>（空ページ境界サーチ方式）。FSは旧案件含む累積表示だが、実際はほぼ全件が募集中（96.4%）。終了案件が多いのはビズリンク（全5,491件終了）・ITプロパートナーズ（全1,235件終了）・meetX（1,282件終了）のみ。FH「募集中合計」は各社meta情報から取得した実測値。</span>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="lbl">FS 掲載総数</div><div class="val" style="color:#2563eb" id="kpi-fs-total">-</div><div class="sub" id="kpi-fs-total-sub">集計中...</div></div>
+      <div class="kpi"><div class="lbl">FH 掲載総数</div><div class="val" style="color:#7c3aed" id="kpi-fh-total">-</div><div class="sub" id="kpi-fh-total-sub">集計中...</div></div>
+      <div class="kpi"><div class="lbl">両サイト共通</div><div class="val" style="color:#d97706" id="kpi-both">-</div><div class="sub" id="kpi-both-sub">集計中...</div></div>
+      <div class="kpi"><div class="lbl">FS 募集中合計</div><div class="val" style="color:#15803d" id="kpi-fs-open">-</div><div class="sub" id="kpi-fs-open-sub">集計中...</div></div>
+      <div class="kpi"><div class="lbl">FH 募集中合計</div><div class="val" style="color:#0f6e56" id="kpi-fh-open">-</div><div class="sub" id="kpi-fh-open-sub">集計中...</div></div>
+      <div class="kpi hl"><div class="lbl">FS 案件なし（名前のみ）</div><div class="val" id="kpi-fs-zero" style="color:#b91c1c">-</div><div class="sub" id="kpi-fs-zero-sub">集計中...</div></div>
+      <div class="kpi" style="border-color:#fde68a;background:#fefce8"><div class="lbl" style="color:#78350f">成果報酬額 総額（想定）</div><div class="val" style="color:#92400e;font-size:20px" id="kpi-revenue-total">-</div><div class="sub" id="kpi-revenue-sub" style="color:#78350f">集計中...</div></div>
+    </div>
+
+    <div class="section">
+      <div class="sec-hd">
+        <div><div class="sec-title" id="ttitle">両サイト共通掲載エージェント一覧</div><div class="sec-sub">案件数降順</div></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="tabs" id="tabs"></div>
+          <input class="search" id="search" placeholder="エージェント名で絞り込み..." oninput="render()">
+        </div>
+      </div>
+      <div id="tbl"></div>
+      <div class="tf"><span id="cnt">0件</span><span>ヘッダークリックでソート</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const FS=[
+  {id:42,n:"レバテックフリーランス",tot:0,open:0,cl:0,fhid:1,exact:true},
+  {id:7,n:"ビズリンク(Bizlink)",tot:0,open:0,cl:0,fhid:23,exact:true},
+  {id:71,n:"ITプロパートナーズ(ITPRO PARTNERS)",tot:0,open:0,cl:0,fhid:null,exact:true},
+  {id:1,n:"Midworks（ミッドワークス）",tot:0,open:0,cl:0,fhid:20,exact:true},
+  {id:2,n:"ココナラテック",tot:0,open:0,cl:0,fhid:9,exact:true},
+  {id:3,n:"フォスターフリーランス",tot:0,open:0,cl:0,fhid:28,exact:true},
+  {id:4,n:"ギークスジョブ(GEECHS JOB)",tot:0,open:0,cl:0,fhid:null,exact:true},
+  {id:5,n:"テクフリ(テックキャリアフリーランス)",tot:0,open:0,cl:0,fhid:null,exact:true},
+  {id:21,n:"アットエンジニア",tot:0,open:0,cl:0,fhid:7,exact:true},
+  {id:25,n:"Humalance(ヒューマランス)",tot:0,open:0,cl:0,fhid:15},
+  {id:37,n:"PE-BANK",tot:0,open:0,cl:0,fhid:53,exact:true},
+  {id:43,n:"レバテッククリエイター",tot:0,open:0,cl:0,fhid:2,exact:true},
+  {id:56,n:"キャリアプラス",tot:0,open:0,cl:0,fhid:19,exact:true},
+  {id:75,n:"TechTreat(テックトリート)",tot:0,open:0,cl:0,fhid:null,exact:true},
+  {id:98,n:"mijicaフリーランス",tot:0,open:0,cl:0,fhid:34,exact:true},
+  {id:103,n:"meetX FREELANCE",tot:0,open:0,cl:0,fhid:45,exact:true},
+  {id:106,n:"ROSCA freelance",tot:0,open:0,cl:0,fhid:61},
+  {id:130,n:"Findy Freelance（ファインディフリーランス）",tot:0,open:0,cl:0,fhid:60,exact:true},
+  {id:158,n:"TECHBIZ",tot:0,open:0,cl:0,fhid:null,exact:true},
+  {id:161,n:"FLEXY(フレキシー)",tot:0,open:0,cl:0,fhid:30,exact:true},
+  {id:47,n:"1 on 1 Freelance",tot:0,open:0,cl:0,fhid:36}
+];
+const FH=[
+  {id:1,n:"レバテックフリーランス",tot:0,open:0,cl:0},
+  {id:2,n:"レバテッククリエイター",tot:0,open:0,cl:0},
+  {id:3,n:"Next Career Freelance",tot:0,open:0,cl:0},
+  {id:4,n:"SEES(シーズ)",tot:0,open:0,cl:0},
+  {id:5,n:"CloudBuilders",tot:0,open:0,cl:0},
+  {id:6,n:"GrowthTech",tot:0,open:0,cl:0},
+  {id:7,n:"アットエンジニア",tot:0,open:0,cl:0},
+  {id:8,n:"Webist",tot:0,open:0,cl:0},
+  {id:9,n:"ココナラテック",tot:0,open:0,cl:0},
+  {id:10,n:"フリーコンサルBiz",tot:0,open:0,cl:0},
+  {id:12,n:"Freed Job",tot:0,open:0,cl:0},
+  {id:13,n:"ランサーズエージェント",tot:0,open:0,cl:0},
+  {id:14,n:"テックビズフリーランス",tot:0,open:0,cl:0},
+  {id:15,n:"Humalance",tot:0,open:0,cl:0},
+  {id:16,n:"HiPro Tech",tot:0,open:0,cl:0},
+  {id:17,n:"フリーランスのミカタ",tot:0,open:0,cl:0},
+  {id:18,n:"Relance",tot:0,open:0,cl:0},
+  {id:19,n:"キャリアプラス",tot:0,open:0,cl:0},
+  {id:20,n:"Midworks",tot:0,open:0,cl:0},
+  {id:22,n:"フリコン",tot:0,open:0,cl:0},
+  {id:23,n:"ビズリンク",tot:0,open:0,cl:0},
+  {id:24,n:"チョクフリ",tot:0,open:0,cl:0},
+  {id:28,n:"フォスターフリーランス",tot:0,open:0,cl:0},
+  {id:30,n:"FLEXY",tot:0,open:0,cl:0},
+  {id:34,n:"mijicaフリーランス",tot:0,open:0,cl:0},
+  {id:35,n:"オルタナエクス",tot:0,open:0,cl:0},
+  {id:36,n:"1 on 1 Freelance",tot:0,open:0,cl:0},
+  {id:38,n:"コンプロフリーランス",tot:0,open:0,cl:0},
+  {id:39,n:"テックリーチ",tot:0,open:0,cl:0},
+  {id:41,n:"Freelance match",tot:0,open:0,cl:0},
+  {id:44,n:"フリーランスポート",tot:0,open:0,cl:0},
+  {id:45,n:"meetX FREELANCE",tot:0,open:0,cl:0},
+  {id:46,n:"World in Freelance",tot:0,open:0,cl:0},
+  {id:47,n:"プロエンジニア",tot:0,open:0,cl:0},
+  {id:53,n:"Pe-BANK フリーランス",tot:0,open:0,cl:0},
+  {id:60,n:"Findy Freelance",tot:0,open:0,cl:0},
+  {id:61,n:"ROSCA freelance",tot:0,open:0,cl:0}
+];
+const FH_MAP=new Map(FH.map(r=>[r.id,r]));
+const FS_WITH_FH=FS.map(r=>({...r,fh:r.fhid?FH_MAP.get(r.fhid):null}));
+const FH_IDS_IN_FS=new Set(FS.map(r=>r.fhid).filter(Boolean));
+
+const fsBoth=FS_WITH_FH.filter(r=>r.fh&&r.tot>0).sort((a,b)=>b.open-a.open);
+const fsOnly=FS_WITH_FH.filter(r=>!r.fh&&r.tot>0).sort((a,b)=>b.open-a.open);
+const fhOnly=FH.filter(r=>!FH_IDS_IN_FS.has(r.id)).sort((a,b)=>b.open-a.open);
+
+const TABS=[
+  {id:'both',lbl:'両サイト共通',cls:'a0',cnt:fsBoth.length},
+  {id:'fs',lbl:'FSのみ（案件あり）',cls:'a1',cnt:fsOnly.length},
+  {id:'fh',lbl:'FHのみ掲載',cls:'a2',cnt:fhOnly.length},
+  {id:'none',lbl:'FS案件なし',cls:'a3',cnt:FS.filter(r=>r.tot===0).length},
+];
+const VIEWS={
+  both:{t:'両サイト共通掲載',s:'両サイト掲載・募集状況比較',tt:'両サイト共通掲載エージェント一覧'},
+  fs:{t:'FSのみ（案件あり）',s:'フリーランススタートのみ掲載',tt:'FSのみ掲載エージェント一覧'},
+  fh:{t:'FHのみ掲載',s:'フリーランスHubのみ掲載',tt:'FHのみ掲載エージェント一覧'},
+  none:{t:'FS案件なし（名前のみ）',s:'案件0件・'+FS.filter(r=>r.tot===0).length+'社',tt:'FS案件なしエージェント（'+FS.filter(r=>r.tot===0).length+'社）'},
+};
+
+// 按分計算パラメータ
+const TOTAL_APP   = 2700;   // 単月応募総数
+const CHARGE_APP  = 1700;   // 課金対象応募数
+const UNIT_PRICE  = 43000;  // 成果報酬単価
+
+let curView='both',sortDir=-1,sortCol='open';
+function fmt(n){return n==null?'－':n.toLocaleString();}
+function fmtYen(n){return n==null?'－':'¥'+Math.round(n).toLocaleString();}
+
+// 按分計算（FS全体の募集中合計を母数として按分）
+function calcShare(openCount){
+  const fsTotal = FS.filter(r=>r.tot>0).reduce((s,r)=>s+r.open,0);
+  if(fsTotal===0||openCount==null||openCount===0) return {appTot:0,appChg:0,revenue:0};
+  const share  = openCount / fsTotal;
+  const appTot = Math.round(TOTAL_APP * share);
+  const appChg = Math.round(CHARGE_APP * share);
+  const revenue= appChg * UNIT_PRICE;
+  return {appTot, appChg, revenue};
+}
+function pct(o,t){return t>0?Math.round(o/t*100)+'%':'－';}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(t=>
+    `<div class="tab${curView===t.id?' '+t.cls:''}" onclick="setView('${t.id}')">${t.lbl} (${t.cnt})</div>`
+  ).join('');
+}
+function setView(v){
+  curView=v;
+  document.querySelectorAll('.nav').forEach((el,i)=>{
+    el.classList.toggle('active',['both','fs','fh','none'][i]===v);
+  });
+  document.getElementById('ptitle').textContent=VIEWS[v].t;
+  document.getElementById('psub').textContent=VIEWS[v].s;
+  document.getElementById('ttitle').textContent=VIEWS[v].tt;
+  document.getElementById('search').value='';
+  renderTabs();render();
+// 全KPIをデータから動的計算
+(function(){
+  const fsWithJobs = FS.filter(r=>r.tot>0);
+  const fsZero     = FS.filter(r=>r.tot===0);
+  const fhWithJobs = FH.filter(r=>r.tot>0);
+  const fsTotSum   = fsWithJobs.reduce((s,r)=>s+r.tot,0);
+  const fsOpenSum  = fsWithJobs.reduce((s,r)=>s+r.open,0);
+  const fhTotSum   = FH.reduce((s,r)=>s+r.tot,0);
+  const fhOpenSum  = FH.reduce((s,r)=>s+r.open,0);
+  const bothCount  = FS_WITH_FH.filter(r=>r.fh).length;
+  const fhRate     = fhTotSum>0 ? Math.round(fhOpenSum/fhTotSum*100) : 0;
+  const fsRate     = fsTotSum>0 ? Math.round(fsOpenSum/fsTotSum*100) : 0;
+
+  function set(id, val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+  function setSub(id, html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
+
+  set('kpi-fs-total',    fsWithJobs.length.toLocaleString());
+  setSub('kpi-fs-total-sub', '案件あり<b> '+fsWithJobs.length+'</b>社 / 全'+FS.length+'社');
+
+  set('kpi-fh-total',    FH.length.toLocaleString());
+  setSub('kpi-fh-total-sub', '案件あり<b> '+fhWithJobs.length+'</b>社');
+
+  set('kpi-both',    bothCount.toLocaleString());
+  const fhBothRate = FH.length>0 ? Math.round(bothCount/FH.length*100) : 0;
+  setSub('kpi-both-sub', 'FH掲載の<b> '+fhBothRate+'%</b>がFS掲載あり');
+
+  set('kpi-fs-open',    fsOpenSum.toLocaleString());
+  setSub('kpi-fs-open-sub', '総掲載'+fsTotSum.toLocaleString()+'件中<b> '+fsRate+'%</b><br><span style="font-size:10px;color:#64748b">全22社バイナリサーチ実測値</span>');
+
+  set('kpi-fh-open',    fhOpenSum.toLocaleString());
+  setSub('kpi-fh-open-sub', '総掲載'+fhTotSum.toLocaleString()+'件中<b> '+fhRate+'%</b>');
+
+  set('kpi-fs-zero',    fsZero.length.toLocaleString());
+  setSub('kpi-fs-zero-sub', 'FS掲載491社中<b style="color:#b91c1c"> '+Math.round(fsZero.length/491*100)+'%</b>');
+
+  // 成果報酬総額（FS全体の按分合計）
+  const totalRevenue = fsWithJobs.reduce((s,r)=>{
+    const share = fsOpenSum>0 ? r.open/fsOpenSum : 0;
+    return s + Math.round(CHARGE_APP * share) * UNIT_PRICE;
+  }, 0);
+  set('kpi-revenue-total', '¥'+totalRevenue.toLocaleString());
+  setSub('kpi-revenue-sub', '課金対象'+CHARGE_APP+'件 × ¥'+UNIT_PRICE.toLocaleString());
+})();
+}
+function toggleSort(col){sortCol===col?(sortDir*=-1):(sortCol=col,sortDir=-1);render();}
+function sd(col){return sortCol===col?(sortDir>0?'↑':'↓'):''}
+
+function row(data,i,v){
+  const bg=i%2===0?'#fff':v==='fh'?'#f5f3ff':v==='fs'?'#eff6ff':'#f0fff8';
+  const maxOpen=data.reduce((m,r)=>{
+    const val=v==='fh'?r.open:r.open; return Math.max(m,val||0);},0)||1;
+  if(v==='both'){
+    const r=data[i];
+    const fh=r.fh;
+    const barPct=Math.round(r.open/maxOpen*100);
+    const exact=r.exact?'<span title="バイナリサーチ正確値" style="color:#d97706;font-size:10px">★</span>':'';
+    return `<tr style="background:${bg}">
+      <td class="ctr"><span class="rk${i<3?' top':''}">${i+1}</span></td>
+      <td style="font-weight:500;overflow:hidden;text-overflow:ellipsis">${r.n}${exact}</td>
+      <td class="num">${fmt(r.tot)}</td>
+      <td class="num"><span class="${r.open>0?'ok-txt':''}">${fmt(r.open)}</span></td>
+      <td class="num"><span class="${r.cl>0?'warn-txt':''}">${fmt(r.cl)}</span></td>
+      <td class="ctr">${pct(r.open,r.tot)}</td>
+      <td><div class="bar-w"><div class="bar-t"><div class="bar-f" style="width:${barPct}%;background:#60a5fa"></div></div></div></td>
+      <td class="num">${fh?fmt(fh.tot):'－'}</td>
+      <td class="num"><span class="${fh&&fh.open>0?'ok-txt':''}">${fh?fmt(fh.open):'－'}</span></td>
+      <td class="num"><span class="${fh&&fh.cl>0?'warn-txt':''}">${fh?fmt(fh.cl):'－'}</span></td>
+      ${(()=>{const s=calcShare(r.open);return `
+      <td class="num" style="background:#f0fdf4">${fmt(s.appTot)}</td>
+      <td class="num" style="background:#f0fdf4">${fmt(s.appChg)}</td>
+      <td class="num" style="background:#fefce8;font-weight:${s.revenue>0?'600':'400'};color:${s.revenue>0?'#92400e':'#94a3b8'}">${fmtYen(s.revenue)}</td>`;})()}
+    </tr>`;
+  }
+  if(v==='fs'){
+    const r=data[i];
+    const barPct=Math.round(r.open/maxOpen*100);
+    return `<tr style="background:${bg}">
+      <td class="ctr"><span class="rk${i<3?' top':''}">${i+1}</span></td>
+      <td style="font-weight:500">${r.n}</td>
+      <td class="num">${fmt(r.tot)}</td>
+      <td class="num"><span class="${r.open>0?'ok-txt':''}">${fmt(r.open)}</span></td>
+      <td class="num"><span class="${r.cl>0?'warn-txt':''}">${fmt(r.cl)}</span></td>
+      <td class="ctr">${pct(r.open,r.tot)}</td>
+      <td><div class="bar-w"><div class="bar-t"><div class="bar-f" style="width:${barPct}%;background:#3b82f6"></div></div></div></td>
+      <td class="ctr"><span class="bdg gray">FH未掲載</span></td>
+      ${(()=>{const s=calcShare(r.open);return `
+      <td class="num" style="background:#f0fdf4">${fmt(s.appTot)}</td>
+      <td class="num" style="background:#f0fdf4">${fmt(s.appChg)}</td>
+      <td class="num" style="background:#fefce8;font-weight:${s.revenue>0?'600':'400'};color:${s.revenue>0?'#92400e':'#94a3b8'}">${fmtYen(s.revenue)}</td>`;})()}
+    </tr>`;
+  }
+  if(v==='fh'){
+    const r=data[i];
+    const barPct=Math.round((r.open||0)/maxOpen*100);
+    const inFs=FH_IDS_IN_FS.has(r.id);
+    return `<tr style="background:${bg}">
+      <td class="ctr"><span class="rk${i<3?' top':''}">${i+1}</span></td>
+      <td style="font-weight:500">${r.n}</td>
+      <td class="num">${fmt(r.tot)}</td>
+      <td class="num"><span class="${r.open>0?'ok-txt':''}">${fmt(r.open)}</span></td>
+      <td class="num"><span class="${r.cl>0?'warn-txt':''}">${fmt(r.cl)}</span></td>
+      <td class="ctr">${pct(r.open,r.tot)}</td>
+      <td><div class="bar-w"><div class="bar-t"><div class="bar-f" style="width:${barPct}%;background:#8b5cf6"></div></div></div></td>
+      <td class="ctr">${inFs?'<span class="bdg fh">FS掲載</span>':'<span class="bdg gray">未掲載</span>'}</td>
+    </tr>`;
+  }
+  return '';
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const tbl=document.getElementById('tbl');
+  if(curView==='none'){
+    tbl.innerHTML=`<div style="padding:30px;text-align:center;color:var(--txt2)">
+      <div style="font-size:28px;margin-bottom:10px">○</div>
+      <div style="font-size:15px;font-weight:600;color:var(--txt);margin-bottom:6px">案件なしエージェント：${FS.filter(r=>r.tot===0).length}社</div>
+      <div style="font-size:12.5px;line-height:1.7">名前だけ登録・サービス終了・準備中のエージェントです。<br>詳細はダウンロードしたExcelファイルの「FSのみ（案件なし）」シートで確認できます。</div>
+    </div>`;
+    document.getElementById('cnt').textContent=FS.filter(r=>r.tot===0).length+'件（Excel参照）';
+    return;
+  }
+  let data=curView==='both'?fsBoth:curView==='fs'?fsOnly:fhOnly;
+  data=data.filter(r=>(r.n||'').toLowerCase().includes(q));
+  data=[...data].sort((a,b)=>{
+    if(sortCol==='open') return sortDir*(b.open-a.open);
+    if(sortCol==='tot') return sortDir*(b.tot-a.tot);
+    if(sortCol==='cl') return sortDir*(b.cl-a.cl);
+    if(sortCol==='fhtot') return sortDir*((b.fh?b.fh.tot:0)-(a.fh?a.fh.tot:0));
+    if(sortCol==='fhopen') return sortDir*((b.fh?b.fh.open:0)-(a.fh?a.fh.open:0));
+    if(sortCol==='appTot') return sortDir*(calcShare(b.open).appTot - calcShare(a.open).appTot);
+    if(sortCol==='appChg') return sortDir*(calcShare(b.open).appChg - calcShare(a.open).appChg);
+    if(sortCol==='revenue') return sortDir*(calcShare(b.open).revenue - calcShare(a.open).revenue);
+    return 0;
+  });
+  const cols=curView==='both'
+    ?`<col style="width:40px"><col style="width:180px"><col style="width:80px"><col style="width:85px"><col style="width:80px"><col style="width:60px"><col style="width:85px"><col style="width:80px"><col style="width:85px"><col style="width:80px"><col style="width:80px"><col style="width:80px"><col style="width:95px">`
+    :`<col style="width:40px"><col><col style="width:80px"><col style="width:85px"><col style="width:80px"><col style="width:60px"><col style="width:85px"><col style="width:80px"><col style="width:80px"><col style="width:80px"><col style="width:95px">`;
+  const thBoth=`<tr style="background:#1d4ed8">
+    <th style="color:#fff;width:40px" class="ctr">#</th>
+    <th style="color:#fff">エージェント名</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('tot')">FS 総数 ${sd('tot')}</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('open')">FS 募集中 ${sd('open')}</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('cl')">FS 終了 ${sd('cl')}</th>
+    <th style="color:#fff" class="ctr">FS 率</th>
+    <th style="color:#fff">バー</th>
+    <th style="color:#3bafda" class="ctr" onclick="toggleSort('fhtot')">FH 総数 ${sd('fhtot')}</th>
+    <th style="color:#3bafda" class="ctr" onclick="toggleSort('fhopen')">FH 募集中 ${sd('fhopen')}</th>
+    <th style="color:#3bafda" class="ctr">FH 終了</th>
+    <th style="color:#86efac" class="ctr" onclick="toggleSort('appTot')">単月応募数<br><span style="font-size:9px;opacity:.8">（想定）</span> ${sd('appTot')}</th>
+    <th style="color:#86efac" class="ctr" onclick="toggleSort('appChg')">課金対象<br><span style="font-size:9px;opacity:.8">応募数</span> ${sd('appChg')}</th>
+    <th style="color:#fde68a" class="ctr" onclick="toggleSort('revenue')">成果報酬額<br><span style="font-size:9px;opacity:.8">（想定）</span> ${sd('revenue')}</th>
+  </tr>`;
+  const thFS=`<tr style="background:#2563eb">
+    <th style="color:#fff;width:40px" class="ctr">#</th>
+    <th style="color:#fff">エージェント名（FS）</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('tot')">FS 総数 ${sd('tot')}</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('open')">FS 募集中 ${sd('open')}</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('cl')">FS 終了 ${sd('cl')}</th>
+    <th style="color:#fff" class="ctr">FS 率</th>
+    <th style="color:#fff">バー</th>
+    <th style="color:#93c5fd" class="ctr">FH掲載</th>
+    <th style="color:#86efac" class="ctr" onclick="toggleSort('appTot')">単月応募数 ${sd('appTot')}</th>
+    <th style="color:#86efac" class="ctr" onclick="toggleSort('appChg')">課金対象数 ${sd('appChg')}</th>
+    <th style="color:#fde68a" class="ctr" onclick="toggleSort('revenue')">成果報酬額 ${sd('revenue')}</th>
+  </tr>`;
+  const thFH=`<tr style="background:#7c3aed">
+    <th style="color:#fff;width:40px" class="ctr">#</th>
+    <th style="color:#fff">エージェント名（FH）</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('tot')">FH 総数 ${sd('tot')}</th>
+    <th style="color:#fff" class="ctr" onclick="toggleSort('open')">FH 募集中 ${sd('open')}</th>
+    <th style="color:#fff" class="ctr">FH 終了</th>
+    <th style="color:#fff" class="ctr">FH 率</th>
+    <th style="color:#fff">バー</th>
+    <th style="color:#c4b5fd" class="ctr">FS掲載</th>
+  </tr>`;
+  const thead=curView==='both'?thBoth:curView==='fs'?thFS:thFH;
+  const rows=data.map((_,i)=>row(data,i,curView)).join('');
+  tbl.innerHTML=`<table><colgroup>${cols}</colgroup><thead>${thead}</thead><tbody>${rows}</tbody></table>`;
+  document.getElementById('cnt').textContent=`${data.length} 件表示`;
+}
+
+renderTabs();render();
+// 全KPIをデータから動的計算
+(function(){
+  const fsWithJobs = FS.filter(r=>r.tot>0);
+  const fsZero     = FS.filter(r=>r.tot===0);
+  const fhWithJobs = FH.filter(r=>r.tot>0);
+  const fsTotSum   = fsWithJobs.reduce((s,r)=>s+r.tot,0);
+  const fsOpenSum  = fsWithJobs.reduce((s,r)=>s+r.open,0);
+  const fhTotSum   = FH.reduce((s,r)=>s+r.tot,0);
+  const fhOpenSum  = FH.reduce((s,r)=>s+r.open,0);
+  const bothCount  = FS_WITH_FH.filter(r=>r.fh).length;
+  const fhRate     = fhTotSum>0 ? Math.round(fhOpenSum/fhTotSum*100) : 0;
+  const fsRate     = fsTotSum>0 ? Math.round(fsOpenSum/fsTotSum*100) : 0;
+
+  function set(id, val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+  function setSub(id, html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
+
+  set('kpi-fs-total',    fsWithJobs.length.toLocaleString());
+  setSub('kpi-fs-total-sub', '案件あり<b> '+fsWithJobs.length+'</b>社 / 全'+FS.length+'社');
+
+  set('kpi-fh-total',    FH.length.toLocaleString());
+  setSub('kpi-fh-total-sub', '案件あり<b> '+fhWithJobs.length+'</b>社');
+
+  set('kpi-both',    bothCount.toLocaleString());
+  const fhBothRate = FH.length>0 ? Math.round(bothCount/FH.length*100) : 0;
+  setSub('kpi-both-sub', 'FH掲載の<b> '+fhBothRate+'%</b>がFS掲載あり');
+
+  set('kpi-fs-open',    fsOpenSum.toLocaleString());
+  setSub('kpi-fs-open-sub', '総掲載'+fsTotSum.toLocaleString()+'件中<b> '+fsRate+'%</b><br><span style="font-size:10px;color:#64748b">全22社バイナリサーチ実測値</span>');
+
+  set('kpi-fh-open',    fhOpenSum.toLocaleString());
+  setSub('kpi-fh-open-sub', '総掲載'+fhTotSum.toLocaleString()+'件中<b> '+fhRate+'%</b>');
+
+  set('kpi-fs-zero',    fsZero.length.toLocaleString());
+  setSub('kpi-fs-zero-sub', 'FS掲載491社中<b style="color:#b91c1c"> '+Math.round(fsZero.length/491*100)+'%</b>');
+
+  // 成果報酬総額（FS全体の按分合計）
+  const totalRevenue = fsWithJobs.reduce((s,r)=>{
+    const share = fsOpenSum>0 ? r.open/fsOpenSum : 0;
+    return s + Math.round(CHARGE_APP * share) * UNIT_PRICE;
+  }, 0);
+  set('kpi-revenue-total', '¥'+totalRevenue.toLocaleString());
+  setSub('kpi-revenue-sub', '課金対象'+CHARGE_APP+'件 × ¥'+UNIT_PRICE.toLocaleString());
+})();
+</script>
+</body>
+</html>
