@@ -122,6 +122,15 @@ def main():
     html, n2 = re.subn(r'const FH\s*=\s*\[[\s\S]*?\n\];', f'const FH={fh_js};', html)
     print(f"FS replaced: {n1}, FH replaced: {n2}")
 
+    
+    # マージ済みデータをJSONに保存（Slack通知用）
+    merged_out = dict(d)
+    merged_out["fs"] = fs_data
+    merged_out["fh"] = fh_data
+    Path("data/data.json").write_text(
+        __import__("json").dumps(merged_out, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
     Path("index.html").write_text(html, encoding="utf-8")
     print(f"OK: {len(html):,} bytes, updated={updated}")
 
