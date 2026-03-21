@@ -1,30 +1,213 @@
 {
-  "updated": "2026-03-21T09:37:00+09:00",
-  "updatedDate": "2026年3月21日 09:37",
+  "updated": "2026-03-21T06:48:49+09:00",
+  "updatedDate": "2026年03月21日 06:48",
   "fs": [
-    {"id": 42, "n": "レバテックフリーランス", "tot": 26756, "open": 26746, "cl": 10, "fhid": 1, "exact": true, "lastPage": 1338},
-    {"id": 7, "n": "ビズリンク(Bizlink)", "tot": 5491, "open": 0, "cl": 5491, "fhid": 23, "exact": true, "lastPage": 0},
-    {"id": 71, "n": "ITプロパートナーズ(ITPRO PARTNERS)", "tot": 1235, "open": 0, "cl": 1235, "fhid": null, "exact": true, "lastPage": 0},
-    {"id": 1, "n": "Midworks（ミッドワークス）", "tot": 42406, "open": 42396, "cl": 10, "fhid": 20, "exact": true, "lastPage": 2120},
-    {"id": 2, "n": "ココナラテック", "tot": 3679, "open": 3669, "cl": 10, "fhid": 9, "exact": true, "lastPage": 184},
-    {"id": 3, "n": "フォスターフリーランス", "tot": 7492, "open": 7482, "cl": 10, "fhid": 28, "exact": true, "lastPage": 374},
-    {"id": 4, "n": "ギークスジョブ(GEECHS JOB)", "tot": 9204, "open": 9194, "cl": 10, "fhid": null, "exact": true, "lastPage": 460},
-    {"id": 5, "n": "テクフリ(テックキャリアフリーランス)", "tot": 6709, "open": 6699, "cl": 10, "fhid": null, "exact": true, "lastPage": 335},
-    {"id": 21, "n": "アットエンジニア", "tot": 17984, "open": 17974, "cl": 10, "fhid": 7, "exact": true, "lastPage": 899},
-    {"id": 25, "n": "Humalance(ヒューマランス)", "tot": 171, "open": 171, "cl": 0, "fhid": 15, "lastPage": 9},
-    {"id": 37, "n": "PE-BANK", "tot": 7646, "open": 7646, "cl": 0, "fhid": 53, "exact": true, "lastPage": 383},
-    {"id": 43, "n": "レバテッククリエイター", "tot": 8708, "open": 8708, "cl": 0, "fhid": 2, "exact": true, "lastPage": 436},
-    {"id": 56, "n": "キャリアプラス", "tot": 3361, "open": 3361, "cl": 0, "fhid": 19, "exact": true, "lastPage": 169},
-    {"id": 59, "n": "エンジニアファクトリー(ENGINEER FACTORY)", "tot": 81, "open": 81, "cl": 0, "fhid": null, "lastPage": 5},
-    {"id": 75, "n": "TechTreat(テックトリート)", "tot": 19807, "open": 19807, "cl": 0, "fhid": null, "exact": true, "lastPage": 991},
-    {"id": 98, "n": "mijicaフリーランス", "tot": 7201, "open": 7201, "cl": 0, "fhid": 34, "exact": true, "lastPage": 361},
-    {"id": 103, "n": "meetX FREELANCE", "tot": 1290, "open": 8, "cl": 1282, "fhid": 45, "exact": true, "lastPage": 1},
-    {"id": 106, "n": "ROSCA freelance", "tot": 2249, "open": 2249, "cl": 0, "fhid": 61, "lastPage": 113},
-    {"id": 130, "n": "Findy Freelance（フィンディフリーランス）", "tot": 1114, "open": 1114, "cl": 0, "fhid": 60, "exact": true, "lastPage": 56},
-    {"id": 158, "n": "TECHBIZ", "tot": 40022, "open": 40022, "cl": 0, "fhid": null, "exact": true, "lastPage": 2002},
-    {"id": 161, "n": "FLEXY（フレキシー）", "tot": 10986, "open": 10986, "cl": 0, "fhid": 30, "exact": true, "lastPage": 550},
-    {"id": 174, "n": "テクワーク", "tot": 1891, "open": 1891, "cl": 0, "fhid": null, "lastPage": 95},
-    {"id": 170, "n": "Stylee", "tot": 1317, "open": 1317, "cl": 0, "fhid": null, "lastPage": 66},
-    {"id": 82, "n": "アサインナビ", "tot": 2045, "open": 2045, "cl": 0, "fhid": null, "lastPage": 103}
+    {
+      "id": 42,
+      "n": "レバテックフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 1,
+      "lastPage": 0
+    },
+    {
+      "id": 7,
+      "n": "ビズリンク(Bizlink)",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 23,
+      "lastPage": 0
+    },
+    {
+      "id": 71,
+      "n": "ITプロパートナーズ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 1,
+      "n": "Midworks",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 20,
+      "lastPage": 0
+    },
+    {
+      "id": 2,
+      "n": "ココナラテック",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 9,
+      "lastPage": 0
+    },
+    {
+      "id": 3,
+      "n": "フォスターフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 28,
+      "lastPage": 0
+    },
+    {
+      "id": 4,
+      "n": "ギークスジョブ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 5,
+      "n": "テクフリ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 21,
+      "n": "アットエンジニア",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 7,
+      "lastPage": 0
+    },
+    {
+      "id": 25,
+      "n": "Humalance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 15,
+      "lastPage": 0
+    },
+    {
+      "id": 37,
+      "n": "PE-BANK",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 53,
+      "lastPage": 0
+    },
+    {
+      "id": 43,
+      "n": "レバテッククリエイター",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 2,
+      "lastPage": 0
+    },
+    {
+      "id": 56,
+      "n": "キャリアプラス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 19,
+      "lastPage": 0
+    },
+    {
+      "id": 75,
+      "n": "TechTreat",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 98,
+      "n": "mijicaフリーランス",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 34,
+      "lastPage": 0
+    },
+    {
+      "id": 103,
+      "n": "meetX FREELANCE",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 45,
+      "lastPage": 0
+    },
+    {
+      "id": 106,
+      "n": "ROSCA freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 61,
+      "lastPage": 0
+    },
+    {
+      "id": 130,
+      "n": "Findy Freelance",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 60,
+      "lastPage": 0
+    },
+    {
+      "id": 158,
+      "n": "TECHBIZ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 161,
+      "n": "FLEXY",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": 30,
+      "lastPage": 0
+    },
+    {
+      "id": 174,
+      "n": "テクワーク",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 170,
+      "n": "Stylee",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    },
+    {
+      "id": 82,
+      "n": "アサインナビ",
+      "tot": 0,
+      "open": 0,
+      "cl": 0,
+      "fhid": null,
+      "lastPage": 0
+    }
   ]
 }
