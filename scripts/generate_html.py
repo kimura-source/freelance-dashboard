@@ -28,7 +28,6 @@ def main():
     fs_data = d.get("fs", [])
     fh_data = d.get("fh", [])
 
-    # JS配列文字列を生成
     fs_js = "[\n" + ",\n".join("  " + agent_to_js(r) for r in fs_data) + "\n]"
     fh_js = "[\n" + ",\n".join("  " + agent_to_js(r) for r in fh_data) + "\n]"
 
@@ -39,32 +38,29 @@ def main():
 
     html = src.read_text(encoding="utf-8")
 
-    # const FS=[...] を置換
-    html = re.sub(
-        r'const FS\s*=\s*\[.*?\];',
+    # 置換前後の確認
+    fs_match = re.search(r'const FS\s*=\s*\[', html)
+    fh_match = re.search(r'const FH\s*=\s*\[', html)
+    print(f"FS match: {bool(fs_match)}, FH match: {bool(fh_match)}")
+
+    # const FS=[...]; を置換（改行・スペース対応）
+    html, n1 = re.subn(
+        r'const FS\s*=\s*\[[\s\S]*?\n\];',
         f'const FS={fs_js};',
-        html, flags=re.DOTALL
+        html
     )
-    # const FH=[...] を置換
-    html = re.sub(
-        r'const FH\s*=\s*\[.*?\];',
+    print(f"FS replaced: {n1} times")
+
+    # const FH=[...]; を置換
+    html, n2 = re.subn(
+        r'const FH\s*=\s*\[[\s\S]*?\n\];',
         f'const FH={fh_js};',
-        html, flags=re.DOTALL
-    )
-    # 更新日時を置換
-    html = re.sub(
-        r'エージェント調査 \d{4}-\d{2}',
-        f'エージェント調査 {updated[:7]}',
         html
     )
-    html = re.sub(
-        r'📅 \d{4}年\d{1,2}月',
-        f'📅 {updated[:7].replace("-", "年")}月',
-        html
-    )
+    print(f"FH replaced: {n2} times")
 
     Path("index.html").write_text(html, encoding="utf-8")
-    print(f"OK: dashboard updated, {len(html):,} bytes")
+    print(f"OK: {len(html):,} bytes, updated={updated}")
 
 if __name__ == "__main__":
     main()
