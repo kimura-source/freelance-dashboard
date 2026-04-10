@@ -26,9 +26,8 @@ jobs:
           git pull --rebase && git push
       - run: |
           npm install -g netlify-cli
-          unset NETLIFY_AUTH_TOKEN
-          unset NETLIFY_TOKEN
-          netlify deploy --prod --dir=. --site=15c5ee67-d8dc-44f1-858e-e8d546df5095 --auth=nfp_s9oXizctSCRUcoqzJtHGFJVhzomqKTdz4d22
+          unset NETLIFY_AUTH_TOKEN NETLIFY_TOKEN NETLIFY_PERSONAL_ACCESS_TOKEN
+          netlify deploy --prod --dir=. --site=15c5ee67-d8dc-44f1-858e-e8d546df5095 --auth=nfp_s9oXizctSCRUcoqzJtHGFJVhzomqKTdz4d22 --debug 2>&1 | head -50
       - env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python scripts/notify_slack.py
