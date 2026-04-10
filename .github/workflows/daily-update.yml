@@ -24,12 +24,9 @@ jobs:
           git add data/data.json index.html
           git diff --staged --quiet || git commit -m "update"
           git pull --rebase && git push
-      - env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
+      - run: |
           npm install -g netlify-cli
-          echo "Token: ${NETLIFY_AUTH_TOKEN:0:4}..." && netlify deploy --prod --dir=. --site=$NETLIFY_SITE_ID --auth=nfp_s9oXizctSCRUcoqzJtHGFJVhzomqKTdz4d22
+          netlify deploy --prod --dir=. --site=15c5ee67-d8dc-44f1-858e-e8d546df5095 --auth=nfp_s9oXizctSCRUcoqzJtHGFJVhzomqKTdz4d22
       - env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python scripts/notify_slack.py
