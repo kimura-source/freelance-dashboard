@@ -1,65 +1,102 @@
 import requests, json, time, datetime, re
 from pathlib import Path
 
-
 FS_AGENTS = [
-    {"id": 42,  "n": "レバテックフリーランス",          "fhid": 1,  "exact": True},
-    {"id": 7,   "n": "ビズリンク(Bizlink)",              "fhid": 23, "exact": True},
-    {"id": 71,  "n": "ITプロパートナーズ(ITPRO PARTNERS)","fhid": 28, "exact": True},
-    {"id": 1,   "n": "Midworks（ミッドワークス）",        "fhid": 15, "exact": True},
-    {"id": 2,   "n": "ココナラテック",                   "fhid": 7,  "exact": True},
-    {"id": 3,   "n": "フォスターフリーランス",           "fhid": 6,  "exact": True},
-    {"id": 4,   "n": "ギークスジョブ(GEECHS JOB)",       "fhid": 8,  "exact": True},
+    {"id": 42,  "n": "レバテックフリーランス",               "fhid": 1,  "exact": True},
+    {"id": 7,   "n": "ビズリンク(Bizlink)",                  "fhid": 23, "exact": True},
+    {"id": 71,  "n": "ITプロパートナーズ(ITPRO PARTNERS)",   "fhid": 28, "exact": True},
+    {"id": 1,   "n": "Midworks（ミッドワークス）",            "fhid": 15, "exact": True},
+    {"id": 2,   "n": "ココナラテック",                       "fhid": 7,  "exact": True},
+    {"id": 3,   "n": "フォスターフリーランス",               "fhid": 6,  "exact": True},
+    {"id": 4,   "n": "ギークスジョブ(GEECHS JOB)",           "fhid": 8,  "exact": True},
     {"id": 5,   "n": "テクフリ(テックキャリアフリーランス)", "fhid": 14, "exact": True},
-    {"id": 21,  "n": "アットエンジニア",                 "fhid": 18, "exact": True},
-    {"id": 25,  "n": "Humalance(ヒューマランス)",         "fhid": 29, "exact": True},
-    {"id": 37,  "n": "PE-BANK",                          "fhid": 9,  "exact": True},
-    {"id": 43,  "n": "レバテッククリエイター",           "fhid": 2,  "exact": True},
-    {"id": 56,  "n": "キャリアプラス",                   "fhid": 4,  "exact": True},
-    {"id": 75,  "n": "TechTreat(テックトリート)",         "fhid": 30, "exact": True},
-    {"id": 98,  "n": "mijicaフリーランス",               "fhid": 13, "exact": True},
-    {"id": 103, "n": "meetX FREELANCE",                  "fhid": 22, "exact": True},
-    {"id": 106, "n": "ROSCA freelance",                  "fhid": 32, "exact": True},
+    {"id": 21,  "n": "アットエンジニア",                     "fhid": 18, "exact": True},
+    {"id": 25,  "n": "Humalance(ヒューマランス)",             "fhid": 29, "exact": True},
+    {"id": 37,  "n": "PE-BANK",                              "fhid": 9,  "exact": True},
+    {"id": 43,  "n": "レバテッククリエイター",               "fhid": 2,  "exact": True},
+    {"id": 56,  "n": "キャリアプラス",                       "fhid": 4,  "exact": True},
+    {"id": 75,  "n": "TechTreat(テックトリート)",             "fhid": 30, "exact": True},
+    {"id": 98,  "n": "mijicaフリーランス",                   "fhid": 13, "exact": True},
+    {"id": 103, "n": "meetX FREELANCE",                      "fhid": 22, "exact": True},
+    {"id": 106, "n": "ROSCA freelance",                      "fhid": 32, "exact": True},
     {"id": 130, "n": "Findy Freelance（ファインディフリーランス）", "fhid": 37, "exact": True},
-    {"id": 158, "n": "TECHBIZ",                          "fhid": 40, "exact": True},
-    {"id": 161, "n": "FLEXY(フレキシー)",                "fhid": 20, "exact": True},
-    {"id": 47,  "n": "1 on 1 Freelance",                 "fhid": 34, "exact": True},
+    {"id": 158, "n": "TECHBIZ",                              "fhid": 40, "exact": True},
+    {"id": 161, "n": "FLEXY(フレキシー)",                    "fhid": 20, "exact": True},
+    {"id": 47,  "n": "1 on 1 Freelance",                     "fhid": 34, "exact": True},
 ]
 
-H = {"User-Agent": "Mozilla/5.0 (compatible; dashboard-bot/1.0)"}
+H = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+}
+
+
+def fetch_page(url):
+    """ページを取得。失敗時はNoneを返す"""
+    try:
+        r = requests.get(url, headers=H, timeout=20)
+        return r.text if r.status_code == 200 else None
+    except Exception as e:
+        print(f"    fetch error: {e}")
+        return None
 
 
 def get_fs_count(agent_id):
-    """フリーランススタートの「全XX件中」を直接取得する"""
-    try:
-        url = f"https://freelance-start.com/agents/{agent_id}/job"
-        r = requests.get(url, headers=H, timeout=15)
-        if r.status_code != 200:
-            return 0, 0
-        # 「全27,945件中1-10件を表示中」のような文字列から件数を取得
-        m = re.search(r'全([d,]+)件中', r.text)
-        if m:
-            tot = int(m.group(1).replace(',', ''))
-        else:
-            # 「求人案件情報はありません」の場合は0
-            if "求人案件情報はありません" in r.text:
-                return 0, 0
-            tot = 0
-        # 募集中件数はページ1の終了案件数から推定（totからclosedを引く）
-        # closedは別途ページから取得を試みる
-        # シンプルに: open = tot - closed。closedはページ内テキストから
-        closed_m = re.search(r'終了[^d]*([d,]+)件', r.text)
-        closed = int(closed_m.group(1).replace(',', '')) if closed_m else 0
-        open_count = tot - closed
-        return tot, open_count
-    except Exception as e:
-        print(f"  Error FS {agent_id}: {e}")
+    """フリーランススタートのエージェント案件数を取得"""
+    url = f"https://freelance-start.com/agents/{agent_id}/job?page=1"
+    html = fetch_page(url)
+    if html is None:
         return 0, 0
+
+    # 「求人案件情報はありません」→ 0件
+    if "求人案件情報はありません" in html:
+        return 0, 0
+
+    # 「全27945件中」パターンで正確な件数を取得
+    m = re.search(r'全([d,]+)件中', html)
+    if m:
+        tot = int(m.group(1).replace(',', ''))
+        # 募集中 = 全件 - 終了件数
+        closed_m = re.search(r'終了案件[^d]*([d,]+)', html)
+        closed = int(closed_m.group(1).replace(',', '')) if closed_m else 0
+        return tot, tot - closed
+
+    # フォールバック: ページ数×20件で推定
+    print(f"    WARNING: count pattern not found for id={agent_id}, using page-count fallback")
+    lo = binary_search_pages(agent_id)
+    return lo * 20, lo * 20
+
+
+def binary_search_pages(agent_id):
+    """ページ数バイナリサーチ（フォールバック）"""
+    def chk(p):
+        html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page={p}")
+        return html is not None and "求人案件情報はありません" not in html
+
+    if not chk(1):
+        return 0
+    lo, hi = 1, 2000
+    while chk(hi):
+        hi *= 2
+        if hi > 100000:
+            hi = 100000
+            break
+        time.sleep(0.2)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if chk(mid):
+            lo = mid
+        else:
+            hi = mid - 1
+        time.sleep(0.2)
+    return lo
 
 
 def scrape_fh(fhid):
+    """フリーランスHubのエージェント案件数を取得"""
     try:
-        r = requests.get(f"https://freelance-hub.jp/agent/{fhid}/", headers=H, timeout=15)
+        r = requests.get(f"https://freelance-hub.jp/agent/{fhid}/", headers=H, timeout=20)
         if r.status_code != 200:
             return 0, 0
         m = re.search(r'([d,]+)\s*件', r.text)
@@ -68,24 +105,26 @@ def scrape_fh(fhid):
             return tot, tot
         return 0, 0
     except Exception as e:
-        print(f"  Error FH {fhid}: {e}")
+        print(f"    FH error {fhid}: {e}")
         return 0, 0
 
 
 def main():
     now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+    print(f"Scraping started at {now.strftime('%Y-%m-%d %H:%M:%S JST')}")
+
     results_fs = []
     for ag in FS_AGENTS:
         print(f"  FS {ag['id']} {ag['n']} ...", end=" ", flush=True)
         tot, opn = get_fs_count(ag["id"])
-        closed = tot - opn
-        print(f"tot={tot} open={opn} closed={closed}")
+        cl = tot - opn
+        print(f"tot={tot} open={opn} closed={cl}")
         results_fs.append({
             "id":    ag["id"],
             "n":     ag["n"],
             "tot":   tot,
             "open":  opn,
-            "cl":    closed,
+            "cl":    cl,
             "fhid":  ag["fhid"],
             "exact": ag["exact"],
         })
@@ -119,7 +158,7 @@ def main():
     p = Path(__file__).parent.parent / "data" / "data.json"
     p.parent.mkdir(exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Saved to {p}  ({len(results_fs)} FS agents, {len(results_fh)} FH agents)")
+    print(f"Done. Saved {len(results_fs)} FS + {len(results_fh)} FH agents.")
 
 
 if __name__ == "__main__":
