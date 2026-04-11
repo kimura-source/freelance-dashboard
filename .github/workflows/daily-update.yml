@@ -12,22 +12,35 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install requests
-      - run: python scripts/scrape.py
-      - run: python scripts/generate_html.py
-      - run: |
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Scrape data
+        run: python scripts/scrape.py
+
+      - name: Generate HTML
+        run: python scripts/generate_html.py
+
+      - name: Commit and push if changed
+        run: |
           git config user.email "actions@github.com"
           git config user.name "github-actions"
           git add data/data.json index.html
-          git diff --staged --quiet || git commit -m "update"
+          git diff --staged --quiet || git commit -m "update: $(date +%Y-%m-%d)"
           git pull --rebase && git push
-      - run: |
-          npm install -g netlify-cli
-          unset NETLIFY_AUTH_TOKEN NETLIFY_TOKEN NETLIFY_PERSONAL_ACCESS_TOKEN
-          netlify deploy --prod --dir=. --site=15c5ee67-d8dc-44f1-858e-e8d546df5095 --auth=nfp_s9oXizctSCRUcoqzJtHGFJVhzomqKTdz4d22 --debug 2>&1 | head -50
-      - env:
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: npx --yes netlify-cli deploy --prod --dir=. --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN
+
+      - name: Notify Slack
+        env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python scripts/notify_slack.py
