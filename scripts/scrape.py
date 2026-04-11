@@ -29,47 +29,70 @@ H = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
 }
 
+# 件数取得パターン（優先順）
+COUNT_PATTERNS = [
+    r'([d,]+)件の求人・案件',   # "27945件の求人・案件"
+    r'全([d,]+)件中',           # "全27945件中"
+    r'求人・案件（([d,]+)件）', # "求人・案件（27945件）"
+    r'"jobCount"s*:s*(d+)',   # JSON内
+    r'(d{4,})s*件',            # 4桁以上の件数
+]
 
-def fetch_page(url):
-    """ページを取得。失敗時はNoneを返す"""
-    try:
-        r = requests.get(url, headers=H, timeout=20)
-        return r.text if r.status_code == 200 else None
-    except Exception as e:
-        print(f"    fetch error: {e}")
-        return None
+
+def fetch_page(url, retries=2):
+    for i in range(retries + 1):
+        try:
+            r = requests.get(url, headers=H, timeout=20)
+            if r.status_code == 200 and len(r.text) > 500:
+                return r.text
+            print(f"    [{i+1}] status={r.status_code} len={len(r.text)}", end=" ")
+            time.sleep(1)
+        except Exception as e:
+            print(f"    [{i+1}] error: {e}", end=" ")
+            time.sleep(1)
+    return None
+
+
+def extract_count(html):
+    """複数パターンで件数を抽出"""
+    for pattern in COUNT_PATTERNS:
+        m = re.search(pattern, html)
+        if m:
+            return int(m.group(1).replace(',', ''))
+    return None
 
 
 def get_fs_count(agent_id):
-    """フリーランススタートのエージェント案件数を取得"""
-    url = f"https://freelance-start.com/agents/{agent_id}/job?page=1"
-    html = fetch_page(url)
+    html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page=1")
     if html is None:
+        print(f"    BLOCKED/EMPTY", end=" ")
         return 0, 0
-
-    # 「求人案件情報はありません」→ 0件
     if "求人案件情報はありません" in html:
         return 0, 0
 
-    # 「全27945件中」パターンで正確な件数を取得
-    m = re.search(r'全([d,]+)件中', html)
-    if m:
-        tot = int(m.group(1).replace(',', ''))
-        # 募集中 = 全件 - 終了件数
-        closed_m = re.search(r'終了案件[^d]*([d,]+)', html)
-        closed = int(closed_m.group(1).replace(',', '')) if closed_m else 0
+    tot = extract_count(html)
+    if tot:
+        # 終了件数を引いてopen件数を計算
+        closed_m = re.search(r'([d,]+)件.*?終了|終了.*?([d,]+)件', html)
+        closed = 0
+        if closed_m:
+            val = closed_m.group(1) or closed_m.group(2)
+            if val:
+                closed = int(val.replace(',', ''))
         return tot, tot - closed
 
-    # フォールバック: ページ数×20件で推定
-    print(f"    WARNING: count pattern not found for id={agent_id}, using page-count fallback")
+    # フォールバック: バイナリサーチ
+    print(f"    WARN: no count pattern, using binary search", end=" ")
     lo = binary_search_pages(agent_id)
     return lo * 20, lo * 20
 
 
 def binary_search_pages(agent_id):
-    """ページ数バイナリサーチ（フォールバック）"""
     def chk(p):
         html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page={p}")
         return html is not None and "求人案件情報はありません" not in html
@@ -80,21 +103,17 @@ def binary_search_pages(agent_id):
     while chk(hi):
         hi *= 2
         if hi > 100000:
-            hi = 100000
             break
         time.sleep(0.2)
     while lo < hi:
         mid = (lo + hi + 1) // 2
-        if chk(mid):
-            lo = mid
-        else:
-            hi = mid - 1
+        lo = mid if chk(mid) else lo
+        hi = mid - 1 if not chk(mid) else hi
         time.sleep(0.2)
     return lo
 
 
 def scrape_fh(fhid):
-    """フリーランスHubのエージェント案件数を取得"""
     try:
         r = requests.get(f"https://freelance-hub.jp/agent/{fhid}/", headers=H, timeout=20)
         if r.status_code != 200:
@@ -120,13 +139,8 @@ def main():
         cl = tot - opn
         print(f"tot={tot} open={opn} closed={cl}")
         results_fs.append({
-            "id":    ag["id"],
-            "n":     ag["n"],
-            "tot":   tot,
-            "open":  opn,
-            "cl":    cl,
-            "fhid":  ag["fhid"],
-            "exact": ag["exact"],
+            "id": ag["id"], "n": ag["n"], "tot": tot,
+            "open": opn, "cl": cl, "fhid": ag["fhid"], "exact": ag["exact"],
         })
         time.sleep(0.5)
 
@@ -140,25 +154,19 @@ def main():
         print(f"  FH {fhid} ...", end=" ", flush=True)
         tot, opn = scrape_fh(fhid)
         print(f"tot={tot} open={opn}")
-        results_fh.append({
-            "id":   fhid,
-            "n":    ag["n"],
-            "tot":  tot,
-            "open": opn,
-            "cl":   0,
-        })
+        results_fh.append({"id": fhid, "n": ag["n"], "tot": tot, "open": opn, "cl": 0})
         time.sleep(0.5)
 
     out = {
         "updated":     now.isoformat(),
         "updatedDate": now.strftime("%Y年%m月%d日 %H:%M"),
-        "fs":          results_fs,
-        "fh":          results_fh,
+        "fs": results_fs,
+        "fh": results_fh,
     }
     p = Path(__file__).parent.parent / "data" / "data.json"
     p.parent.mkdir(exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Done. Saved {len(results_fs)} FS + {len(results_fh)} FH agents.")
+    print(f"Done. {len(results_fs)} FS + {len(results_fh)} FH agents saved.")
 
 
 if __name__ == "__main__":
