@@ -25,24 +25,17 @@ FS_AGENTS = [
     {"id": 47,  "n": "1 on 1 Freelance",                     "fhid": 34, "exact": True},
 ]
 
-# キャッシュバイパス + ブラウザ偽装ヘッダー
 H = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
     "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
     "Accept-Encoding": "gzip, deflate, br",
-    "Cache-Control": "no-cache, no-store, must-revalidate",
+    "Cache-Control": "no-cache",
     "Pragma": "no-cache",
-    "Expires": "0",
     "Connection": "keep-alive",
-    "Sec-Fetch-Dest": "document",
-    "Sec-Fetch-Mode": "navigate",
-    "Sec-Fetch-Site": "none",
-    "Sec-Fetch-User": "?1",
     "Upgrade-Insecure-Requests": "1",
 }
 
-# 件数取得パターン（優先順）
 COUNT_PATTERNS = [
     r'([d,]+)件の求人・案件',
     r'全([d,]+)件中',
@@ -50,6 +43,8 @@ COUNT_PATTERNS = [
     r'"totalCount"s*:s*(d+)',
     r'"jobCount"s*:s*(d+)',
 ]
+
+_debug_done = False  # 最初の1社だけデバッグ出力
 
 
 def fetch_page(url, retries=2):
@@ -65,24 +60,31 @@ def fetch_page(url, retries=2):
     return None
 
 
-def extract_count(html):
+def extract_count(html, debug=False):
+    if debug:
+        # 件数パターンの前後をデバッグ出力（最初の1社のみ）
+        for kw in ['件の求人', '件中', '件）', 'totalCount', 'jobCount']:
+            idx = html.find(kw)
+            if idx >= 0:
+                print(f"  [DEBUG] '{kw}' found at {idx}: ...{repr(html[max(0,idx-20):idx+30])}...")
     for pattern in COUNT_PATTERNS:
         m = re.search(pattern, html)
         if m:
             return int(m.group(1).replace(',', ''))
+    if debug:
+        print(f"  [DEBUG] html_len={len(html)} preview={repr(html[:200])}")
     return None
 
 
-def get_fs_count(agent_id):
+def get_fs_count(agent_id, debug=False):
     html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page=1")
     if html is None:
         return 0, 0
     if "求人案件情報はありません" in html:
         return 0, 0
 
-    tot = extract_count(html)
+    tot = extract_count(html, debug=debug)
     if tot:
-        # 終了件数を差し引いてopen件数を計算
         closed_m = re.search(r'終了[^d]*([d,]+)件|([\d,]+)件[^d]*終了', html)
         closed = 0
         if closed_m:
@@ -90,7 +92,6 @@ def get_fs_count(agent_id):
             closed = int(val.replace(',', '')) if val else 0
         return tot, max(0, tot - closed)
 
-    # フォールバック: バイナリサーチ
     print("WARN:fallback", end=" ")
     lo = binary_search_pages(agent_id)
     return lo * 20, lo * 20
@@ -134,9 +135,11 @@ def main():
     print(f"Started {now.strftime('%Y-%m-%d %H:%M JST')}")
 
     results_fs = []
+    first = True
     for ag in FS_AGENTS:
         print(f"  FS {ag['id']} {ag['n']} ...", end=" ", flush=True)
-        tot, opn = get_fs_count(ag["id"])
+        tot, opn = get_fs_count(ag["id"], debug=first)
+        first = False
         print(f"tot={tot} open={opn}")
         results_fs.append({
             "id": ag["id"], "n": ag["n"], "tot": tot,
