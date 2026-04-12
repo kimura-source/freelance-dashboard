@@ -1,4 +1,4 @@
-import requests, json, time, datetime, re
+import requests, json, time, datetime, re, sys
 from pathlib import Path
 
 FS_AGENTS = [
@@ -42,9 +42,8 @@ COUNT_PATTERNS = [
     r'求人・案件（([d,]+)件）',
     r'"totalCount"s*:s*(d+)',
     r'"jobCount"s*:s*(d+)',
+    r'(d{4,})件',
 ]
-
-_debug_done = False  # 最初の1社だけデバッグ出力
 
 
 def fetch_page(url, retries=2):
@@ -53,32 +52,34 @@ def fetch_page(url, retries=2):
             r = requests.get(url, headers=H, timeout=20)
             if r.status_code == 200 and len(r.text) > 1000:
                 return r.text
-            print(f"[{i+1}] status={r.status_code} len={len(r.text)}", end=" ")
+            print(f"[{i+1}] status={r.status_code} len={len(r.text)}", flush=True)
         except Exception as e:
-            print(f"[{i+1}] err={e}", end=" ")
+            print(f"[{i+1}] err={e}", flush=True)
         time.sleep(1)
     return None
 
 
 def extract_count(html, debug=False):
     if debug:
-        # 件数パターンの前後をデバッグ出力（最初の1社のみ）
-        for kw in ['件の求人', '件中', '件）', 'totalCount', 'jobCount']:
-            idx = html.find(kw)
-            if idx >= 0:
-                print(f"  [DEBUG] '{kw}' found at {idx}: ...{repr(html[max(0,idx-20):idx+30])}...")
-    for pattern in COUNT_PATTERNS:
-        m = re.search(pattern, html)
+        print(f"HTML_LEN={len(html)}", flush=True)
+        # すべてのパターンをチェックして結果を出力
+        for pat in COUNT_PATTERNS:
+            m = re.search(pat, html)
+            print(f"  PAT={pat!r} -> {m.group(0)!r if m else 'NO_MATCH'}", flush=True)
+        # 4桁以上の数字+件 を全部抽出
+        all_nums = re.findall(r'(d{4,})件', html)
+        print(f"  ALL_NUMS_4PLUS={all_nums[:10]}", flush=True)
+    for pat in COUNT_PATTERNS:
+        m = re.search(pat, html)
         if m:
             return int(m.group(1).replace(',', ''))
-    if debug:
-        print(f"  [DEBUG] html_len={len(html)} preview={repr(html[:200])}")
     return None
 
 
 def get_fs_count(agent_id, debug=False):
     html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page=1")
     if html is None:
+        print(f"BLOCKED", flush=True)
         return 0, 0
     if "求人案件情報はありません" in html:
         return 0, 0
@@ -92,7 +93,7 @@ def get_fs_count(agent_id, debug=False):
             closed = int(val.replace(',', '')) if val else 0
         return tot, max(0, tot - closed)
 
-    print("WARN:fallback", end=" ")
+    print("WARN:fallback_to_binary_search", flush=True)
     lo = binary_search_pages(agent_id)
     return lo * 20, lo * 20
 
@@ -126,21 +127,21 @@ def scrape_fh(fhid):
         m = re.search(r'([d,]+)\s*件', r.text)
         return (int(m.group(1).replace(',', '')), int(m.group(1).replace(',', ''))) if m else (0, 0)
     except Exception as e:
-        print(f"FH err {fhid}: {e}", end=" ")
+        print(f"FH err {fhid}: {e}", flush=True)
         return 0, 0
 
 
 def main():
     now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-    print(f"Started {now.strftime('%Y-%m-%d %H:%M JST')}")
+    print(f"Started {now.strftime('%Y-%m-%d %H:%M JST')}", flush=True)
 
     results_fs = []
     first = True
     for ag in FS_AGENTS:
         print(f"  FS {ag['id']} {ag['n']} ...", end=" ", flush=True)
-        tot, opn = get_fs_count(ag["id"], debug=first)
+        tot, opn = get_fs_count(ag["id"], debug=first)  # 最初の1社のみデバッグ
         first = False
-        print(f"tot={tot} open={opn}")
+        print(f"tot={tot} open={opn}", flush=True)
         results_fs.append({
             "id": ag["id"], "n": ag["n"], "tot": tot,
             "open": opn, "cl": tot - opn,
@@ -156,7 +157,7 @@ def main():
         seen.add(ag["fhid"])
         print(f"  FH {ag['fhid']} ...", end=" ", flush=True)
         tot, opn = scrape_fh(ag["fhid"])
-        print(f"tot={tot} open={opn}")
+        print(f"tot={tot} open={opn}", flush=True)
         results_fh.append({"id": ag["fhid"], "n": ag["n"], "tot": tot, "open": opn, "cl": 0})
         time.sleep(0.5)
 
@@ -168,7 +169,7 @@ def main():
     p = Path(__file__).parent.parent / "data" / "data.json"
     p.parent.mkdir(exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Done. FS={len(results_fs)} FH={len(results_fh)}")
+    print(f"Done. FS={len(results_fs)} FH={len(results_fh)}", flush=True)
 
 
 if __name__ == "__main__":
