@@ -1,4 +1,4 @@
-import requests, json, time, datetime, re, sys
+import requests, json, time, datetime, re
 from pathlib import Path
 
 FS_AGENTS = [
@@ -36,60 +36,54 @@ H = {
     "Upgrade-Insecure-Requests": "1",
 }
 
-COUNT_PATTERNS = [
-    r'([d,]+)件の求人・案件',
-    r'全([d,]+)件中',
-    r'求人・案件（([d,]+)件）',
-    r'"totalCount"\s*:\s*(\d+)',
-    r'"jobCount"\s*:\s*(\d+)',
-    r'(\d{4,})件',
-]
+# Cloudflareブロックページの特徴（202返却・短いHTML）
+BLOCK_SIZE_THRESHOLD = 5000  # 5KB未満はブロックページとみなす
 
 
 def fetch_page(url, retries=2):
+    """ページを取得。202ブロックや短いHTMLはNoneを返す"""
     for i in range(retries + 1):
         try:
             r = requests.get(url, headers=H, timeout=20)
-            if r.status_code == 200 and len(r.text) > 1000:
+            # 202はCloudflareのチャレンジページ（ブロック）
+            if r.status_code == 202:
+                print("CF_BLOCK(202)", end=" ", flush=True)
+                time.sleep(2)
+                continue
+            if r.status_code == 200 and len(r.text) > BLOCK_SIZE_THRESHOLD:
                 return r.text
-            print("status=%d len=%d" % (r.status_code, len(r.text)), flush=True)
+            print("skip(status=%d len=%d)" % (r.status_code, len(r.text)), end=" ", flush=True)
         except Exception as e:
-            print("err=%s" % e, flush=True)
+            print("err=%s" % str(e)[:30], end=" ", flush=True)
         time.sleep(1)
     return None
 
 
-def extract_count(html, debug=False):
-    if debug:
-        print("HTML_LEN=%d" % len(html), flush=True)
-        for pat in COUNT_PATTERNS:
-            m = re.search(pat, html)
-            hit = m.group(0) if m else "NO_MATCH"
-            print("  PAT=%s -> %s" % (pat, hit), flush=True)
-        all_nums = re.findall(r'(\d{4,})件', html)
-        print("  ALL_4PLUS_NUMS=%s" % str(all_nums[:10]), flush=True)
-    for pat in COUNT_PATTERNS:
-        m = re.search(pat, html)
-        if m:
-            return int(m.group(1).replace(',', ''))
-    return None
-
-
-def get_fs_count(agent_id, debug=False):
+def get_fs_count(agent_id):
     html = fetch_page("https://freelance-start.com/agents/%d/job?page=1" % agent_id)
     if html is None:
-        print("BLOCKED", flush=True)
         return 0, 0
     if "求人案件情報はありません" in html:
         return 0, 0
 
-    tot = extract_count(html, debug=debug)
-    if tot:
-        closed_m = re.search(r'終了[^\d]*([\d,]+)件', html)
-        closed = int(closed_m.group(1).replace(',', '')) if closed_m else 0
-        return tot, max(0, tot - closed)
+    # 複数パターンで件数を抽出
+    patterns = [
+        r'([d,]+)件の求人・案件',
+        r'全([d,]+)件中',
+        r'求人・案件（([d,]+)件）',
+        r'"totalCount"s*:s*(d+)',
+        r'"jobCount"s*:s*(d+)',
+    ]
+    for pat in patterns:
+        m = re.search(pat, html)
+        if m:
+            tot = int(m.group(1).replace(',', ''))
+            closed_m = re.search(r'終了[^d]*([d,]+)件', html)
+            closed = int(closed_m.group(1).replace(',', '')) if closed_m else 0
+            return tot, max(0, tot - closed)
 
-    print("WARN:fallback", flush=True)
+    # フォールバック: バイナリサーチ（202ブロック検知付き）
+    print("WARN:binary_search", end=" ", flush=True)
     lo = binary_search_pages(agent_id)
     return lo * 20, lo * 20
 
@@ -97,21 +91,24 @@ def get_fs_count(agent_id, debug=False):
 def binary_search_pages(agent_id):
     def chk(p):
         html = fetch_page("https://freelance-start.com/agents/%d/job?page=%d" % (agent_id, p))
-        return html is not None and "求人案件情報はありません" not in html
+        # Noneはブロックまたは存在しないページ
+        if html is None:
+            return False
+        return "求人案件情報はありません" not in html
 
     if not chk(1):
         return 0
     lo, hi = 1, 2000
     while chk(hi):
         hi = min(hi * 2, 100000)
-        time.sleep(0.2)
+        time.sleep(0.3)
     while lo < hi:
         mid = (lo + hi + 1) // 2
         if chk(mid):
             lo = mid
         else:
             hi = mid - 1
-        time.sleep(0.2)
+        time.sleep(0.3)
     return lo
 
 
@@ -120,10 +117,10 @@ def scrape_fh(fhid):
         r = requests.get("https://freelance-hub.jp/agent/%d/" % fhid, headers=H, timeout=20)
         if r.status_code != 200:
             return 0, 0
-        m = re.search(r'([\d,]+)\s*件', r.text)
+        m = re.search(r'([d,]+)s*件', r.text)
         return (int(m.group(1).replace(',', '')), int(m.group(1).replace(',', ''))) if m else (0, 0)
     except Exception as e:
-        print("FH err %d: %s" % (fhid, e), flush=True)
+        print("FH err %d: %s" % (fhid, str(e)[:30]), end=" ", flush=True)
         return 0, 0
 
 
@@ -132,11 +129,9 @@ def main():
     print("Started %s" % now.strftime('%Y-%m-%d %H:%M JST'), flush=True)
 
     results_fs = []
-    first = True
     for ag in FS_AGENTS:
         print("  FS %d %s ..." % (ag["id"], ag["n"]), end=" ", flush=True)
-        tot, opn = get_fs_count(ag["id"], debug=first)
-        first = False
+        tot, opn = get_fs_count(ag["id"])
         print("tot=%d open=%d" % (tot, opn), flush=True)
         results_fs.append({
             "id": ag["id"], "n": ag["n"], "tot": tot,
@@ -159,7 +154,7 @@ def main():
 
     out = {
         "updated":     now.isoformat(),
-        "updatedDate": now.strftime("%Y\u5e74%m\u6708%d\u65e5 %H:%M"),
+        "updatedDate": now.strftime("%Y年%m月%d日 %H:%M"),
         "fs": results_fs, "fh": results_fh,
     }
     p = Path(__file__).parent.parent / "data" / "data.json"
