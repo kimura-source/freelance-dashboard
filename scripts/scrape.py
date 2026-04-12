@@ -40,9 +40,9 @@ COUNT_PATTERNS = [
     r'([d,]+)件の求人・案件',
     r'全([d,]+)件中',
     r'求人・案件（([d,]+)件）',
-    r'"totalCount"s*:s*(d+)',
-    r'"jobCount"s*:s*(d+)',
-    r'(d{4,})件',
+    r'"totalCount"\s*:\s*(\d+)',
+    r'"jobCount"\s*:\s*(\d+)',
+    r'(\d{4,})件',
 ]
 
 
@@ -52,23 +52,22 @@ def fetch_page(url, retries=2):
             r = requests.get(url, headers=H, timeout=20)
             if r.status_code == 200 and len(r.text) > 1000:
                 return r.text
-            print(f"[{i+1}] status={r.status_code} len={len(r.text)}", flush=True)
+            print("status=%d len=%d" % (r.status_code, len(r.text)), flush=True)
         except Exception as e:
-            print(f"[{i+1}] err={e}", flush=True)
+            print("err=%s" % e, flush=True)
         time.sleep(1)
     return None
 
 
 def extract_count(html, debug=False):
     if debug:
-        print(f"HTML_LEN={len(html)}", flush=True)
-        # すべてのパターンをチェックして結果を出力
+        print("HTML_LEN=%d" % len(html), flush=True)
         for pat in COUNT_PATTERNS:
             m = re.search(pat, html)
-            print(f"  PAT={pat!r} -> {m.group(0)!r if m else 'NO_MATCH'}", flush=True)
-        # 4桁以上の数字+件 を全部抽出
-        all_nums = re.findall(r'(d{4,})件', html)
-        print(f"  ALL_NUMS_4PLUS={all_nums[:10]}", flush=True)
+            hit = m.group(0) if m else "NO_MATCH"
+            print("  PAT=%s -> %s" % (pat, hit), flush=True)
+        all_nums = re.findall(r'(\d{4,})件', html)
+        print("  ALL_4PLUS_NUMS=%s" % str(all_nums[:10]), flush=True)
     for pat in COUNT_PATTERNS:
         m = re.search(pat, html)
         if m:
@@ -77,30 +76,27 @@ def extract_count(html, debug=False):
 
 
 def get_fs_count(agent_id, debug=False):
-    html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page=1")
+    html = fetch_page("https://freelance-start.com/agents/%d/job?page=1" % agent_id)
     if html is None:
-        print(f"BLOCKED", flush=True)
+        print("BLOCKED", flush=True)
         return 0, 0
     if "求人案件情報はありません" in html:
         return 0, 0
 
     tot = extract_count(html, debug=debug)
     if tot:
-        closed_m = re.search(r'終了[^d]*([d,]+)件|([\d,]+)件[^d]*終了', html)
-        closed = 0
-        if closed_m:
-            val = closed_m.group(1) or closed_m.group(2)
-            closed = int(val.replace(',', '')) if val else 0
+        closed_m = re.search(r'終了[^\d]*([\d,]+)件', html)
+        closed = int(closed_m.group(1).replace(',', '')) if closed_m else 0
         return tot, max(0, tot - closed)
 
-    print("WARN:fallback_to_binary_search", flush=True)
+    print("WARN:fallback", flush=True)
     lo = binary_search_pages(agent_id)
     return lo * 20, lo * 20
 
 
 def binary_search_pages(agent_id):
     def chk(p):
-        html = fetch_page(f"https://freelance-start.com/agents/{agent_id}/job?page={p}")
+        html = fetch_page("https://freelance-start.com/agents/%d/job?page=%d" % (agent_id, p))
         return html is not None and "求人案件情報はありません" not in html
 
     if not chk(1):
@@ -121,27 +117,27 @@ def binary_search_pages(agent_id):
 
 def scrape_fh(fhid):
     try:
-        r = requests.get(f"https://freelance-hub.jp/agent/{fhid}/", headers=H, timeout=20)
+        r = requests.get("https://freelance-hub.jp/agent/%d/" % fhid, headers=H, timeout=20)
         if r.status_code != 200:
             return 0, 0
-        m = re.search(r'([d,]+)\s*件', r.text)
+        m = re.search(r'([\d,]+)\s*件', r.text)
         return (int(m.group(1).replace(',', '')), int(m.group(1).replace(',', ''))) if m else (0, 0)
     except Exception as e:
-        print(f"FH err {fhid}: {e}", flush=True)
+        print("FH err %d: %s" % (fhid, e), flush=True)
         return 0, 0
 
 
 def main():
     now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-    print(f"Started {now.strftime('%Y-%m-%d %H:%M JST')}", flush=True)
+    print("Started %s" % now.strftime('%Y-%m-%d %H:%M JST'), flush=True)
 
     results_fs = []
     first = True
     for ag in FS_AGENTS:
-        print(f"  FS {ag['id']} {ag['n']} ...", end=" ", flush=True)
-        tot, opn = get_fs_count(ag["id"], debug=first)  # 最初の1社のみデバッグ
+        print("  FS %d %s ..." % (ag["id"], ag["n"]), end=" ", flush=True)
+        tot, opn = get_fs_count(ag["id"], debug=first)
         first = False
-        print(f"tot={tot} open={opn}", flush=True)
+        print("tot=%d open=%d" % (tot, opn), flush=True)
         results_fs.append({
             "id": ag["id"], "n": ag["n"], "tot": tot,
             "open": opn, "cl": tot - opn,
@@ -155,21 +151,21 @@ def main():
         if ag["fhid"] in seen:
             continue
         seen.add(ag["fhid"])
-        print(f"  FH {ag['fhid']} ...", end=" ", flush=True)
+        print("  FH %d ..." % ag["fhid"], end=" ", flush=True)
         tot, opn = scrape_fh(ag["fhid"])
-        print(f"tot={tot} open={opn}", flush=True)
+        print("tot=%d open=%d" % (tot, opn), flush=True)
         results_fh.append({"id": ag["fhid"], "n": ag["n"], "tot": tot, "open": opn, "cl": 0})
         time.sleep(0.5)
 
     out = {
         "updated":     now.isoformat(),
-        "updatedDate": now.strftime("%Y年%m月%d日 %H:%M"),
+        "updatedDate": now.strftime("%Y\u5e74%m\u6708%d\u65e5 %H:%M"),
         "fs": results_fs, "fh": results_fh,
     }
     p = Path(__file__).parent.parent / "data" / "data.json"
     p.parent.mkdir(exist_ok=True)
     p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Done. FS={len(results_fs)} FH={len(results_fh)}", flush=True)
+    print("Done. FS=%d FH=%d" % (len(results_fs), len(results_fh)), flush=True)
 
 
 if __name__ == "__main__":
