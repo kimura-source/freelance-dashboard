@@ -20,20 +20,6 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Debug HTML response
-        run: |
-          echo "=== curl test ==="
-          curl -s -o /tmp/fs_test.html -w "status=%{http_code} size=%{size_download}" \
-            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" \
-            -H "Accept: text/html,application/xhtml+xml" \
-            -H "Accept-Language: ja,en-US;q=0.7" \
-            "https://freelance-start.com/agents/42/job?page=1"
-          echo ""
-          echo "=== count pattern check ==="
-          grep -o '.[0-9,]\{4,\}件[の中）].' /tmp/fs_test.html | head -5 || echo "NO MATCH"
-          echo "=== html preview ==="
-          head -c 500 /tmp/fs_test.html
-
       - name: Scrape data
         run: python scripts/scrape.py
 
